@@ -3,6 +3,7 @@
 Высокодоступный кластер PostgreSQL на базе Patroni, etcd и Ansible.
 
 ## Структура проекта
+```
 ha-cluster/
 ├── ansible.cfg               # Основные настройки Ansible (inventory, become, etc.)
 ├── group_vars/
@@ -27,7 +28,7 @@ ha-cluster/
 │       └── handlers/
 └── playbooks/
 └── site.yml              # Главный плейбук (деплой всего кластера)
-
+```
 
 ## Назначение основных файлов
 
@@ -81,11 +82,13 @@ ansible-playbook playbooks/site.yml --ask-become-pass -e reset_cluster=true --ta
 patronictl -c /etc/patroni/config.yml list
 ```
 
+```
 Ожидаемый результат:
 Member | Host         | Role    | State     | TL | Lag in MB
 node1  | 10.10.10.10  | Leader  | running   | X  | 
 node2  | 10.10.10.30  | Replica | streaming | X  | 0
 node3  | 10.10.10.40  | Replica | streaming | X  | 0
+```
 
 ### 2. Проверка репликации
 
