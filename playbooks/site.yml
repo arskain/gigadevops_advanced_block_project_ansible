@@ -1,0 +1,10 @@
+- name: Deploy HA PostgreSQL Cluster
+  hosts: cluster
+  become: true
+  vars_files:
+    - ../group_vars/cluster.yml
+
+  roles:
+    - etcd
+    - postgresql
+    - patroni

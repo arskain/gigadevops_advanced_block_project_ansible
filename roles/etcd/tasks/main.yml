@@ -1,0 +1,20 @@
+- name: Install etcd
+  ansible.builtin.apt:
+    name: etcd-server
+    state: present
+  tags: etcd_setup
+
+- name: Configure etcd
+  ansible.builtin.template:
+    src: etcd.conf.j2
+    dest: /etc/default/etcd
+    mode: "0644"
+  notify: Restart etcd
+  tags: etcd_setup
+
+- name: Enable etcd
+  ansible.builtin.systemd:
+    name: etcd
+    enabled: true
+    state: started
+  tags: etcd_setup

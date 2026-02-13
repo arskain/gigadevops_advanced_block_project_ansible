@@ -1,0 +1,12 @@
+- name: Install PostgreSQL
+  ansible.builtin.apt:
+    name: postgresql-{{ postgres_version }}
+    state: present
+  tags: db_setup
+
+- name: Stop default PostgreSQL service
+  ansible.builtin.systemd:
+    name: postgresql
+    state: stopped
+    enabled: false
+  tags: db_setup

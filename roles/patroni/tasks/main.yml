@@ -1,0 +1,63 @@
+- name: Stop Patroni
+  ansible.builtin.systemd:
+    name: patroni
+    state: stopped
+  when: reset_cluster | default(false) | bool
+  tags: reset_cluster
+
+- name: Stop PostgreSQL
+  ansible.builtin.systemd:
+    name: postgresql
+    state: stopped
+  failed_when: false
+  when: reset_cluster | default(false) | bool
+  tags: reset_cluster
+
+- name: Remove PostgreSQL data directory
+  ansible.builtin.file:
+    path: /var/lib/postgresql/{{ postgres_version }}/main
+    state: absent
+  when: reset_cluster | default(false) | bool
+  tags: reset_cluster
+
+- name: Recreate PostgreSQL data directory
+  ansible.builtin.file:
+    path: /var/lib/postgresql/{{ postgres_version }}/main
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: '0700'
+  when: reset_cluster | default(false) | bool
+  tags: reset_cluster
+
+- name: Clean Patroni namespace in etcd
+  ansible.builtin.command: >
+    etcdctl --endpoints={{ etcd_nodes | map(attribute='ip') | map('regex_replace', '$', ':2379') | join(',') }}
+    del --prefix /service/{{ cluster_name }}
+  run_once: true
+  changed_when: false
+  when: reset_cluster | default(false) | bool
+  tags: reset_cluster
+
+- name: Install Patroni
+  ansible.builtin.apt:
+    name: patroni
+    state: present
+  tags: patroni_setup
+
+- name: Create Patroni config
+  ansible.builtin.template:
+    src: patroni.yml.j2
+    dest: /etc/patroni/config.yml
+    owner: postgres
+    group: postgres
+    mode: "0644"
+  notify: Restart patroni
+  tags: patroni_setup
+
+- name: Enable Patroni
+  ansible.builtin.systemd:
+    name: patroni
+    enabled: true
+    state: started
+  tags: patroni_setup

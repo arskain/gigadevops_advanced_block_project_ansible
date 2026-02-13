@@ -1,0 +1,15 @@
+cluster_name: pg-cluster
+
+etcd_nodes:
+  - { name: node1, ip: 10.10.10.10 }
+  - { name: node2, ip: 10.10.10.30 }
+  - { name: node3, ip: 10.10.10.40 }
+
+postgres_version: 16
+postgres_port: 5432
+
+replication_user: replication
+replication_password: "12345"
+
+postgres_superuser_user: postgres
+postgres_superuser_password: "12345"
