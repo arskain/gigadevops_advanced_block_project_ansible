@@ -46,7 +46,9 @@ ha-cluster/
 
 ### 1. Полный деплой с нуля (сброс кластера)
 
-`ansible-playbook playbooks/site.yml --ask-become-pass -e reset_cluster=true`
+```bash
+ansible-playbook playbooks/site.yml --ask-become-pass -e reset_cluster=true
+```
 
 - Сбрасывает состояние Patroni
 - Очищает данные PostgreSQL
@@ -55,21 +57,29 @@ ha-cluster/
 
 ### 2. Обычный деплой / обновление конфигов (без сброса)
 
-`ansible-playbook playbooks/site.yml --ask-become-pass`
+```bash
+ansible-playbook playbooks/site.yml --ask-become-pass
+```
 
 ### 3. Только роль Patroni (например, после правки шаблона)
 
-`ansible-playbook playbooks/site.yml --ask-become-pass --tags patroni_setup`
+```bash
+ansible-playbook playbooks/site.yml --ask-become-pass --tags patroni_setup
+```
 
 ### 4. Только сброс (если кластер в deadlock)
 
-`ansible-playbook playbooks/site.yml --ask-become-pass -e reset_cluster=true --tags reset_cluster`
+```bash
+ansible-playbook playbooks/site.yml --ask-become-pass -e reset_cluster=true --tags reset_cluster
+```
 
 ## Проверки после деплоя
 
 ### 1. Статус кластера (с любой ноды)
 
-`patronictl -c /etc/patroni/config.yml list`
+```bash
+patronictl -c /etc/patroni/config.yml list
+```
 
 Ожидаемый результат:
 Member | Host         | Role    | State     | TL | Lag in MB
@@ -80,7 +90,9 @@ node3  | 10.10.10.40  | Replica | streaming | X  | 0
 ### 2. Проверка репликации
 
 На текущем Leader:
-`psql -h 10.10.10.10 -U postgres -W`
+```bash
+psql -h 10.10.10.10 -U postgres -W
+```
 
 ```sql
 CREATE TABLE test(id int);
